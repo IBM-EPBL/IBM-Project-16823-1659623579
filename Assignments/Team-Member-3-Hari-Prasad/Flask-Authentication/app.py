@@ -5,13 +5,20 @@ from wtforms.validators import InputRequired, Length
 import ibm_db as db
 import re
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
+HOSTNAME=os.getenv('HOSTNAME')
+DATABASE=os.getenv('DATABASE')
+PORT=os.getenv('PORT')
+SECURITY=os.getenv('SECURITY')
+UID=os.getenv('UID')
+PWD=os.getenv('PWD')
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
-hostname="54a2f15b-5c0f-46df-8954-7e38e612c2bd.c1ogj3sd0tgtu0lqde00.databases.appdomain.cloud"
 app.config['SECRET_KEY'] = SECRET_KEY
 #conn = db.connect("database=bludb;hostname=;port=32716;security=SSL;sslservercertificate=DigiCertGlobalRootCA.crt;uid=;pwd=",'','')
-conn = db.connect("DATABASE=bludb;HOSTNAME=54a2f15b-5c0f-46df-8954-7e38e612c2bd.c1ogj3sd0tgtu0lqde00.databases.appdomain.cloud;PORT=32716;SECURITY=SSL;SSLServerCertificate=DigiCertGlobalRootCA.crt;UID=vym60262;PWD=Ryf35ZGKlrmSVZm1", '', '')
+conn = db.connect("DATABASE="+str(DATABASE)+";HOSTNAME="+str(HOSTNAME)+";PORT="+str(PORT)+";SECURITY="+str(SECURITY)+";SSLServerCertificate=DigiCertGlobalRootCA1.crt;UID="+str(UID)+";PWD="+str(PWD), '', '')
 class SignInForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
     email = StringField('Email', validators=[InputRequired(), Length(min=5, max=20)], render_kw={"placeholder": "email"})
