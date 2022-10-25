@@ -5,6 +5,7 @@ html {
     background-repeat: no-repeat;
     display: flex;
     justify-content: center;
+    text-align: center;
 }
 
 form {

@@ -12,12 +12,11 @@
   </head>
   <body>
     <div class="card">
-      <form method="POST" action="">
+      <form method="POST" action="display">
         <h1>SIGN IN</h1>
-        <div>{{ form.username }}</div>
-        <div>{{ form.email }}</div>
-        <div>{{ form.rollNumber }}</div>
-        <div>{{ form.password }}</div>
+        <div> <input type="text" placeholder="Username" name="user" required/> </div>
+        <div> <input type="text" placeholder="Email" name="email" required/> </div>
+        <div> <input type="text" placeholder="Phone" name="phone" pattern="[0-9]{10}" required/> </div>
         <input type="submit" value="Sign In" />
       </form>
     </div>

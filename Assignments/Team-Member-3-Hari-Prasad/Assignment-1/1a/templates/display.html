@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    <title>Welcome</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
@@ -12,12 +12,9 @@
   </head>
   <body>
     <div class="card">
-      <form method="POST" action="">
-        <h1>LOG IN</h1>
-        <div>{{ form.username }}</div>
-        <div>{{ form.password }}</div>
-        <input type="submit" value="Log In" />
-      </form>
+        <h1>WELCOME {{user}}</h1>
+        <div>Your Email : {{ email }}</div>
+        <div>Your Phone Number : {{ phone }}</div>
     </div>
   </body>
 </html>
