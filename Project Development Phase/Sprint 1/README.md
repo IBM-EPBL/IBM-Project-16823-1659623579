@@ -1,1 +1,2 @@
-The following documents are present in this folder:
+# Nutrition Assistant Application
+- Authentication with Sendgrid confirmation mail
