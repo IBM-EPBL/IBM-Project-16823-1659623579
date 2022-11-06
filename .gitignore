@@ -1,3 +1,2 @@
 .env
-Assignments/Team-Member-3-Hari-Prasad/Flask-Authentication/DigiCertGlobalRootCA1.crt
-Assignments/Team-Lead-Venkat-Narayan/Flask-Authentication/DigiCertGlobalRootCA1.crt
+client_secret.json
