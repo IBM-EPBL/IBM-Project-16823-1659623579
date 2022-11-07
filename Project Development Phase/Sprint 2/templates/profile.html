@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log In</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="card">
+      <h1>Profile</h1>
+        <div><h2>UserName : {{user}}</h2></div>
+        <div><h2>Email : {{email}}</h2></div>
+        <a href="/changepwd"><button>Change Password</button></a></strong>
+        <br />
+        <strong>{{msg}}</strong>
+    </div>
+  </body>
+</html>
