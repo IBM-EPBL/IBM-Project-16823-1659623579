@@ -36,7 +36,7 @@ LOG_IN_PAGE_URL = '/login'
 HOME_PAGE_URL = '/home'
 GOOGLE_LOGIN_PAGE_URL = '/google_login'
 PROFILE_PAGE_URL = '/profile'
-CHANGE_PWD = '/changepwd'
+CHANGE_PASSWORD_URL = '/changepwd'
 
 # Google Auth Configuration
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
@@ -176,24 +176,34 @@ def callback():
     return redirect(HOME_PAGE_URL)
 
 # Home page
-@app.route(HOME_PAGE_URL)
+@app.route(HOME_PAGE_URL, methods=['GET', 'POST'])
 def homepage():
     if not session.get('user'):
         return redirect(LOG_IN_PAGE_URL)
-    return render_template('homepage.html', user=session.get('user'))
+
+    msg = ''
+    if request.method == 'POST':
+        if request.form['food']:
+            msg = 'Image Uploaded Successfully!'
+        else:
+            msg = "Image wasn't uploaded, Try again!"
+        
+    return render_template('homepage.html', user=session.get('user'), msg=msg)
 
 # Profile page
 @app.route(PROFILE_PAGE_URL, methods=['GET', 'POST'])
 def profile():
     if not session.get('user'):
         return redirect(LOG_IN_PAGE_URL)
+    
     sqlst = "select email from user where username=?"
     user = session.get('user')
-    email = execute_sql(statement = sqlst,user=user)
-    return render_template('profile.html',user=user , email = email['EMAIL'])
+    email = execute_sql(statement=sqlst, user=user)
+    
+    return render_template('profile.html', user=user, email=email['EMAIL'])
 
 #change password
-@app.route(CHANGE_PWD, methods=['GET', 'POST'])
+@app.route(CHANGE_PASSWORD_URL, methods=['GET', 'POST'])
 def changepwd():
     if not session.get('user'):
         return redirect(LOG_IN_PAGE_URL)
@@ -203,19 +213,22 @@ def changepwd():
     email = ''
     if request.method == 'POST':
         user = session.get('user')
-        oldPass = request.form['oldPass']
-        newPass = request.form['newPass']
-        print(user, oldPass, newPass)
-        sqlSt = 'SELECT password from user where username = ?'
-        dbPass = execute_sql(statement = sqlSt , username = user)['PASSWORD']
-        sqlSt = 'SELECT email from user where username = ?'
-        email = execute_sql(statement = sqlSt ,username = user)['EMAIL']
-        if dbPass == oldPass:
-            sqlSt = 'UPDATE user SET password = ? where username = ?'
-            execute_sql(statement = sqlSt , password = newPass , username = user)
-            msg = 'Updated Successfully'
+        oldpass = request.form['oldpass']
+        newpass = request.form['newpass']
+
+        sqlst = 'SELECT password from user where username = ?'
+        dbpass = execute_sql(statement = sqlst , username = user)['PASSWORD']
+        sqlst = 'SELECT email from user where username = ?'
+        email = execute_sql(statement = sqlst ,username = user)['EMAIL']
+
+        if dbpass == oldpass:
+            sqlst = 'UPDATE user SET password = ? where username = ?'
+            execute_sql(statement = sqlst , password = newpass , username = user)
+            msg = 'Updated Successfully!'
+        else:
+            msg = 'Old Password Incorrect!'
         
-        return render_template('profile.html',user=user,email=email,msg=msg)
+        return render_template('profile.html', user=user, email=email, msg=msg)
 
     return render_template('passwordChange.html')
 
