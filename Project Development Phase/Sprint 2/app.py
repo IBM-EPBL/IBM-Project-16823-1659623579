@@ -205,6 +205,7 @@ def changepwd():
         user = session.get('user')
         oldPass = request.form['oldPass']
         newPass = request.form['newPass']
+        print(user, oldPass, newPass)
         sqlSt = 'SELECT password from user where username = ?'
         dbPass = execute_sql(statement = sqlSt , username = user)['PASSWORD']
         sqlSt = 'SELECT email from user where username = ?'
@@ -214,7 +215,7 @@ def changepwd():
             execute_sql(statement = sqlSt , password = newPass , username = user)
             msg = 'Updated Successfully'
         
-        return redirect(PROFILE_PAGE_URL)
+        return render_template('profile.html',user=user,email=email,msg=msg)
 
     return render_template('passwordChange.html')
 
