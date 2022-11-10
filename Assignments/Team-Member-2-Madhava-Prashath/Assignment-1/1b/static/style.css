@@ -1,0 +1,17 @@
+html {
+    background: linear-gradient(#85FFBD, #87CEEB);
+    font-family: 'roboto', sans-serif;
+    background-repeat: no-repeat;
+    display: flex;
+}
+
+.card {
+    align-items: center;
+    text-align: center;
+    margin: 0 auto auto auto;
+    background-color: white;
+    width: 60%;
+    height: inherit;
+    padding: 20px;
+    border-radius: 12px;
+}
