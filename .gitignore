@@ -1,2 +1,4 @@
 .env
 client_secret.json
+**/env
+**/Dockerfile
