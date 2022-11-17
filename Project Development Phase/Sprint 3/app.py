@@ -238,12 +238,12 @@ def foodpage():
     print("Predicted concepts:")
     for concept in output.data.concepts:
         print("%s %.2f" % (concept.name, concept.value))
-        if(concept.value>0.5):
-            query=query+concept.name+" "
+        if(concept.value>0.3):
+            query=query+concept.name+" and "
 
     # Uncomment this line to print the full Response JSON
     #print(post_model_outputs_response)
-    
+    print(query)
 
     api_url = 'https://api.calorieninjas.com/v1/nutrition?query='
     
@@ -256,11 +256,11 @@ def foodpage():
     data = json.dumps(obj, indent=2)
     print(data)
 
-    df = pd.DataFrame.from_dict(obj)
+    df = pd.DataFrame.from_dict(obj,orient='columns', dtype=None, columns=None)
     items = []
     for concept in output.data.concepts:
-        print("%s %.2f" % (concept.name, concept.value))
-        if(concept.value>0.5):
+        #print("%s %.2f" % (concept.name, concept.value))
+        if(concept.value>0.3):
             items.append(concept.name)
     print(items)
     df.set_axis(items, axis="index")
