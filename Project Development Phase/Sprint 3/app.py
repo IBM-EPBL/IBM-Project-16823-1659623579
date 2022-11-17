@@ -256,8 +256,8 @@ def foodpage():
     obj = json.loads(response.text)
     data = json.dumps(obj, indent=2)
     print(data)
-
-    df = pd.DataFrame(obj)
+    
+    df = pd.DataFrame(obj["items"])
     df.insert(0, "Ingredients", query.split(" and "))
 
     return render_template('foodpage.html', msg=df.to_html())
