@@ -13,6 +13,8 @@ import google.auth.transport.requests
 from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
 from clarifai_grpc.grpc.api import resources_pb2, service_pb2, service_pb2_grpc
 from clarifai_grpc.grpc.api.status import status_code_pb2
+from werkzeug.utils import secure_filename
+UPLOAD_FOLDER='/uploads'
 
 # Configure Flask app
 app = Flask(__name__)
@@ -29,6 +31,7 @@ DATABASE_NAME = os.getenv('DATABASE_NAME')
 USERNAME = os.getenv('USER')
 PASSWORD = os.getenv('PASSWORD')
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_AUTH_CLIENT_ID')
+NUTRITION_API_KEY = os.getenv('NUTRITION_API')
 
 connection_string = "DATABASE={0};HOSTNAME={1};PORT={2};SECURITY=SSL;SSLServerCertificate=DigiCertGlobalRootCA.crt;PROTOCOL=TCPIP;UID={3};PWD={4};".format(DATABASE_NAME, HOSTNAME, PORT_NUMBER, USERNAME, PASSWORD)
 conn = db.connect(connection_string, "", "")
@@ -200,6 +203,10 @@ def foodpage():
     metadata = (('authorization', 'Key ' + C_PAT),)
 
     userDataObject = resources_pb2.UserAppIDSet(user_id=C_USER_ID, app_id='main')
+    
+    print(FILE_NAME)
+    with open(FILE_NAME, "rb") as f:
+        file_bytes = f.read()
 
     post_model_outputs_response = stub.PostModelOutputs(
         service_pb2.PostModelOutputsRequest(
@@ -210,8 +217,8 @@ def foodpage():
                 resources_pb2.Input(
                     data=resources_pb2.Data(
                         image=resources_pb2.Image(
-                            url='https://media.istockphoto.com/id/1206323282/photo/juicy-hamburger-on-white-background.jpg?s=612x612&w=0&k=20&c=K0DxyiChLwewXcCy8aLjjOqkc8QXPgQMAW-vwRCzqG4='
-                        )
+                        base64=file_bytes
+                    )
                     )
                 )
             ]
@@ -225,28 +232,43 @@ def foodpage():
 
     # Since we have one input, one output will exist here.
     output = post_model_outputs_response.outputs[0]
-
+    query = ''
     print("Predicted concepts:")
     for concept in output.data.concepts:
         print("%s %.2f" % (concept.name, concept.value))
+        if(concept.value>0.5):
+            query=query+concept.name+" "
 
     # Uncomment this line to print the full Response JSON
     #print(post_model_outputs_response)
+    
+
+    api_url = 'https://api.calorieninjas.com/v1/nutrition?query='
+    
+    response = requests.get(api_url + query, headers={'X-Api-Key': NUTRITION_API_KEY})
+    if response.status_code == requests.codes.ok:
+        print(response.text)
+    else:
+        print("Error:", response.status_code, response.text)
 
     return render_template('foodpage.html', user=session.get('user'), msg=msg)
-
-
-
 
 # Home page
 @app.route(HOME_PAGE_URL, methods=['GET', 'POST'])
 def homepage():
     if not session.get('user'):
         return redirect(LOG_IN_PAGE_URL)
-
+    global FILE_NAME
     msg = ''
     if request.method == 'POST':
-        if request.form['food']:
+        if request.files['food']:
+            img=request.files['food']
+            #print(img.filename)
+            #print("ABCD",)
+            FILE_NAME=os.path.join('./uploads/',secure_filename(img.filename))
+            print(FILE_NAME)
+            img.save(FILE_NAME)
+            
             msg = 'Image Uploaded Successfully!'
             return redirect(FOOD_URL)
         else:
