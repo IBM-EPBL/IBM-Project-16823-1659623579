@@ -238,7 +238,7 @@ def foodpage():
     print("Predicted concepts:")
     for concept in output.data.concepts:
         print("%s %.2f" % (concept.name, concept.value))
-        if(concept.value>0.5):
+        if(concept.value>0.3):
             if len(query) > 0 and query[-1] != '&':
                 query += " and "
             query += concept.name
@@ -259,6 +259,11 @@ def foodpage():
     
     df = pd.DataFrame(obj["items"])
     df.insert(0, "Ingredients", query.split(" and "))
+    df.drop('name', axis=1, inplace=True)
+    df.drop('serving_size_g', axis=1, inplace=True)
+
+    df.loc['Total']=df.sum(axis=0, numeric_only=True)
+    df.iloc[-1, df.columns.get_loc('Ingredients')] = ''
 
     return render_template('foodpage.html', msg=df.to_html())
 
