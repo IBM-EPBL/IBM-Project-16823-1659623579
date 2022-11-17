@@ -1,1 +1,2 @@
-The following documents are present in this folder:
+# Nutrition Assistant Application
+- Uploaded image processing and nutrition values extraction
