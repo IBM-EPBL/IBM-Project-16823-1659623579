@@ -255,7 +255,7 @@ def foodpage():
     obj = json.loads(response.text)
     data = json.dumps(obj, indent=2)
     print(data)
-
+    
     df = pd.DataFrame.from_dict(obj,orient='columns', dtype=None, columns=None)
     items = []
     for concept in output.data.concepts:
