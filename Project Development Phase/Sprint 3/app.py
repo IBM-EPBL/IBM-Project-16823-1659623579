@@ -239,12 +239,13 @@ def foodpage():
     for concept in output.data.concepts:
         print("%s %.2f" % (concept.name, concept.value))
         if(concept.value>0.5):
-            query=query+concept.name+" "
+            if len(query) > 0 and query[-1] != '&':
+                query += " and "
+            query += concept.name
 
     # Uncomment this line to print the full Response JSON
     #print(post_model_outputs_response)
     
-
     api_url = 'https://api.calorieninjas.com/v1/nutrition?query='
     
     response = requests.get(api_url + query, headers={'X-Api-Key': NUTRITION_API_KEY})
@@ -256,16 +257,10 @@ def foodpage():
     data = json.dumps(obj, indent=2)
     print(data)
 
-    df = pd.DataFrame.from_dict(obj)
-    items = []
-    for concept in output.data.concepts:
-        print("%s %.2f" % (concept.name, concept.value))
-        if(concept.value>0.5):
-            items.append(concept.name)
-    print(items)
-    df.set_axis(items, axis="index")
+    df = pd.DataFrame(obj)
+    df.insert(0, "Ingredients", query.split(" and "))
 
-    return render_template('foodpage.html', user=session.get('user'), msg=df.to_html())
+    return render_template('foodpage.html', msg=df.to_html())
 
 # Home page
 @app.route(HOME_PAGE_URL, methods=['GET', 'POST'])

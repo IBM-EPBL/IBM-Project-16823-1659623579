@@ -63,3 +63,7 @@ input[type="file"] {
     padding: 20px;
     border-radius: 12px;
 }
+
+table, tr, th {
+    text-align: center;
+}
