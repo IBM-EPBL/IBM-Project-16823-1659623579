@@ -14,6 +14,8 @@ from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
 from clarifai_grpc.grpc.api import resources_pb2, service_pb2, service_pb2_grpc
 from clarifai_grpc.grpc.api.status import status_code_pb2
 from werkzeug.utils import secure_filename
+import json
+import pandas as pd
 UPLOAD_FOLDER='/uploads'
 
 # Configure Flask app
@@ -246,12 +248,24 @@ def foodpage():
     api_url = 'https://api.calorieninjas.com/v1/nutrition?query='
     
     response = requests.get(api_url + query, headers={'X-Api-Key': NUTRITION_API_KEY})
-    if response.status_code == requests.codes.ok:
-        print(response.text)
-    else:
+    if response.status_code != requests.codes.ok:
         print("Error:", response.status_code, response.text)
+        abort(500)
 
-    return render_template('foodpage.html', user=session.get('user'), msg=msg)
+    obj = json.loads(response.text)
+    data = json.dumps(obj, indent=2)
+    print(data)
+
+    df = pd.DataFrame.from_dict(obj)
+    items = []
+    for concept in output.data.concepts:
+        print("%s %.2f" % (concept.name, concept.value))
+        if(concept.value>0.5):
+            items.append(concept.name)
+    print(items)
+    df.set_axis(items, axis="index")
+
+    return render_template('foodpage.html', user=session.get('user'), msg=df.to_html())
 
 # Home page
 @app.route(HOME_PAGE_URL, methods=['GET', 'POST'])
