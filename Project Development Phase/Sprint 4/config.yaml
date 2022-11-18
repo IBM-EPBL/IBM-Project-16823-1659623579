@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: appserver
-        image: au.icr.io/nutrition-project-ap/appserver:latest
+        image: au.icr.io/nutrition-project-ap/appserver2:latest
 ---
 apiVersion: v1
 kind: Service

@@ -88,6 +88,8 @@ def execute_sql(statement, **params):
 # Creates user table if not exists
 create_table = "CREATE TABLE IF NOT EXISTS user(email varchar(30), username varchar(30), password varchar(30))"
 execute_sql(statement=create_table)
+# create_table = "CREATE TABLE IF NOT EXISTS stats(id integer PRIMARY KEY , username varchar(30) FOREIGN KEY REFERENCES user(username) ON DELETE CASCADE , uploadedOn DATE , stats VARCHAR(32704)"
+# execute_sql(statement=create_table)
 
 # Helper function to send confirmation mail on sign in
 def send_confirmation_mail(user, email):
